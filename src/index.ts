@@ -30,7 +30,7 @@ router.post('/api/create', async (request: Request, env: Env) => {
 
     await env.repo.put(data.alias, data.fullUrl);
 
-    return new Response(null, { status: 201 });
+    return new Response(data.alias, { status: 201 });
 });
 
 router.get('/:alias', async (request, env: Env) => {
