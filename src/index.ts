@@ -1,10 +1,11 @@
 import { Router } from 'itty-router';
 import { HashUrlShortener } from './urlShortener';
+import Counter from './counter';
 
 interface Env {
-	'repo': KVNamespace;
+	repo: KVNamespace;
+	COUNTERS: DurableObjectNamespace<Counter>;
 }
-
 const router = Router();
 
 router.post('/api/create', async (request: Request, env: Env) => {
@@ -25,7 +26,15 @@ router.post('/api/create', async (request: Request, env: Env) => {
 
     if (!data.alias) {//
         const urlShortener = new HashUrlShortener();
-		data.alias = urlShortener.generateAlias(data.fullUrl);
+
+		const id = env.COUNTERS.idFromName('urlShortener');
+		const stub = env.COUNTERS.get(id);
+		let counterValue = null;
+		counterValue = await stub.getCounterValue() as number;
+		await stub.increment();		
+		console.log(`Counter value: ${counterValue}`);
+
+		data.alias = urlShortener.generateAlias(counterValue);
     }
 
     await env.repo.put(data.alias, data.fullUrl);
@@ -56,4 +65,7 @@ router.all('*', () => new Response('Welcome to CF-Short. A simple URL shortener 
  
 export default {
 	fetch: (request, env, ctx) => router.fetch(request, env, ctx),
+	
 } satisfies ExportedHandler<Env>;
+
+export { default as Counter } from './counter';

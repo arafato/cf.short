@@ -29,6 +29,24 @@
       "id": "f56101f7d9444a9a941d074d84286135",
 	  "preview_id": "e86f8b7ffe2d48228fde64c86fea143b"
     }
+  ],
+  
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "COUNTERS",
+        "class_name": "Counter"
+      }
+    ]
+  },
+
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": [
+        "Counter"
+      ]
+    }
   ]
 
 	/**
