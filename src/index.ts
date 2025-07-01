@@ -51,7 +51,7 @@ router.get('/:alias', async (request, env: Env) => {
 	}
 });
 
-router.all('*', () => new Response('Not found', { status: 404 }));
+router.all('*', () => new Response('Welcome to CF-Short. A simple URL shortener based on Cloudflare.', { status: 404 }));
  
 export default {
 	fetch: (request, env, ctx) => router.fetch(request, env, ctx),
