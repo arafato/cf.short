@@ -40,15 +40,6 @@
     ]
   },
 
-  "migrations": [
-    {
-      "tag": "v1",
-      "new_sqlite_classes": [
-        "Counter"
-      ]
-    }
-  ]
-
 	/**
 	 * Environment Variables
 	 * https://developers.cloudflare.com/workers/wrangler/configuration/#environment-variables
