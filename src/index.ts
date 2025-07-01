@@ -32,7 +32,6 @@ router.post('/api/create', async (request: Request, env: Env) => {
 		let counterValue = null;
 		counterValue = await stub.getCounterValue() as number;
 		await stub.increment();		
-		console.log(`Counter value: ${counterValue}`);
 
 		data.alias = urlShortener.generateAlias(counterValue);
     }

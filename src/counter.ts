@@ -6,6 +6,7 @@ export default class Counter extends DurableObject {
 
     async getCounterValue() {
         const value = (await this.ctx.storage.get("value")) || START;
+        console.log(`Counter value: ${value}`);
         return value;
     }
 
@@ -14,13 +15,6 @@ export default class Counter extends DurableObject {
         value += amount;
         await this.ctx.storage.put("value", value);
         console.log(`Counter incremented to: ${value}`);
-        return value;
-    }
-
-    async decrement(amount = 1) {
-        let value: number = (await this.ctx.storage.get("value")) || START;
-        value -= amount;
-        await this.ctx.storage.put("value", value);
         return value;
     }
 }
