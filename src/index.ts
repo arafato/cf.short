@@ -40,6 +40,7 @@ router.get('/:alias', async (request, env: Env) => {
 	}
 	const url = await env.repo.get(`${alias}`);
 	if (url) {
+		console.log(`Redirecting to: ${url} based on alias: ${alias}`);
 		return new Response(null, {
 			status: 302,
 			headers: {
