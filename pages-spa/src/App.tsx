@@ -140,7 +140,7 @@ export default function App() {
                   textDecoration: "none",
                 }}
               >
-                {currentProtocol + "//" + currentHostname + "/" + shortUrl}
+                {currentProtocol + "//" + currentHostname + shortUrl}
               </a>
             </div>
           )}
