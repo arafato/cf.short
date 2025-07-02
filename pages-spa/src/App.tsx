@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 
 export default function App() {
+  const currentProtocol: string = window.location.protocol;
+  const currentHostname: string = window.location.hostname;
   const [fullUrl, setFullUrl] = useState("");
   const [shortUrl, setShortUrl] = useState("");
   const [error, setError] = useState("");
@@ -138,7 +140,7 @@ export default function App() {
                   textDecoration: "none",
                 }}
               >
-                {shortUrl}
+                {currentProtocol + "//" + currentHostname + "/" + shortUrl}
               </a>
             </div>
           )}
