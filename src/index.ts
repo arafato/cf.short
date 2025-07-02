@@ -6,7 +6,16 @@ interface Env {
 	repo: KVNamespace;
 	COUNTERS: DurableObjectNamespace<Counter>;
 }
+
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "http://localhost:5173",
+  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type",
+};
+
 const router = Router();
+router.options('*', () => new Response(null, { headers: corsHeaders }));
+
 
 router.post('/api/create', async (request: Request, env: Env) => {
     let data: { 
@@ -38,7 +47,7 @@ router.post('/api/create', async (request: Request, env: Env) => {
 
     await env.repo.put(data.alias, data.fullUrl);
 
-    return new Response(data.alias, { status: 201 });
+    return new Response(data.alias, { status: 201, headers: corsHeaders });
 });
 
 router.get('/:alias', async (request, env: Env) => {
