@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL;
-
 export default function App() {
   const [fullUrl, setFullUrl] = useState("");
   const [shortUrl, setShortUrl] = useState("");
@@ -12,7 +10,7 @@ export default function App() {
     setError("");
     setShortUrl("");
     try {
-      const res = await fetch(`${API_BASE}/api/create`, {
+      const res = await fetch(`/api/create`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ fullUrl }),
@@ -22,7 +20,7 @@ export default function App() {
         return;
       }
       const alias = await res.text();
-      setShortUrl(`${API_BASE}/${alias}`);
+      setShortUrl(`/${alias}`);
     } catch (err) {
       setError("Network error");
     }
