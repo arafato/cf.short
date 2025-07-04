@@ -3,6 +3,7 @@ import { HashUrlShortener } from './urlShortener';
 import Counter from './counter';
 
 interface Env {
+	ENVIRONMENT: string;
 	repo: KVNamespace;
 	COUNTERS: DurableObjectNamespace<Counter>;
 }
@@ -10,36 +11,36 @@ interface Env {
 const router = Router();
 
 router.post('/api/create', async (request: Request, env: Env) => {
-    let data: { 
-		fullUrl?: string, 
-		alias?: string 
+	let data: {
+		fullUrl?: string,
+		alias?: string
 	};
 
-    try {
-        data = await request.json();
-    } catch {
-        return new Response('Invalid JSON', { status: 400 });
-    }
+	try {
+		data = await request.json();
+	} catch {
+		return new Response('Invalid JSON', { status: 400 });
+	}
 
 	if (!data.fullUrl) {//
-        return new Response('Missing "fullUrl" in request body', { status: 400 });
-    }
+		return new Response('Missing "fullUrl" in request body', { status: 400 });
+	}
 
-    if (!data.alias) {//
-        const urlShortener = new HashUrlShortener();
+	if (!data.alias) {//
+		const urlShortener = new HashUrlShortener();
 
 		const id = env.COUNTERS.idFromName('urlShortener');
 		const stub = env.COUNTERS.get(id);
 		let counterValue = null;
 		counterValue = await stub.getCounterValue() as number;
-		await stub.increment();		
+		await stub.increment();
 
 		data.alias = urlShortener.generateAlias(counterValue);
-    }
+	}
 
-    await env.repo.put(data.alias, data.fullUrl);
+	await env.repo.put(data.alias, data.fullUrl);
 
-    return new Response(data.alias, { status: 201 });
+	return new Response(data.alias, { status: 201 });
 });
 
 router.get('/:alias', async (request, env: Env) => {
@@ -62,8 +63,23 @@ router.get('/:alias', async (request, env: Env) => {
 });
 
 export default {
-	fetch: (request, env, ctx) => router.fetch(request, env, ctx),
-	
+	fetch: async (request, env, ctx) => {
+		let userEmail = request.headers.get('CF-Access-Authenticated-User-Email');
+
+		// Mock user for local development
+		if (!userEmail && env.ENVIRONMENT === 'development') {
+			userEmail = 'test@example.com';
+			console.log('🔧 Using mock authentication for local development');
+		}
+
+		if (!userEmail) {
+			return new Response('Authentication required', { status: 401 });
+		}
+
+		console.log(`Successfull authentication from user: ${userEmail}`);
+		return router.fetch(request, env, ctx)
+	}
+
 } satisfies ExportedHandler<Env>;
 
 export { default as Counter } from './counter';
