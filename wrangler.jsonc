@@ -47,8 +47,9 @@
 			"d1_databases": [
 				{
 					"binding": "DB",
-					"database_name": "cf-short-user-short-urls",
-					"database_id": "LOCAL"
+					"database_name": "cf-short",
+					"database_id": "LOCAL",
+					"migrations_dir": "./migrations"
 				}
 			]
 		},
@@ -76,7 +77,8 @@
 				{
 					"binding": "DB",
 					"database_name": "cf-short",
-					"database_id": "56fad1fe-0b2e-4cea-ab68-68d37fdfbdf2"
+					"database_id": "56fad1fe-0b2e-4cea-ab68-68d37fdfbdf2",
+					"migrations_dir": "./migrations"
 				}
 			]
 		}
