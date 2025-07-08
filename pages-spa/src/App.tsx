@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import UrlList from "./UrlList";
 
 export default function App() {
   const currentProtocol: string = window.location.protocol;
@@ -159,6 +160,7 @@ export default function App() {
               {error}
             </div>
           )}
+          <UrlList />
         </div>
         {/* Right: Logo/Brand */}
         <div

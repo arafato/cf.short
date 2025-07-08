@@ -71,6 +71,23 @@ router.get('/:alias', async (request, env: Env) => {
 	}
 });
 
+router.get('/api/list', async (request, env: Env) => {
+	console.log(`Fetching URLs for user: ${env.userId}`);
+	const session = env.DB.withSession() // synchronous
+	// query executes on either primary database or a read replica
+	const result = await session
+		.prepare(`SELECT originalUrl, shortenedUrl FROM "user-url-mapping" WHERE userId = '${env.userId}';`)
+		.run()
+
+	let list: any = [];
+	list = result.results.map((row: any) => ({
+		originalUrl: row.originalUrl,
+		shortenedUrl: row.shortenedUrl
+	}));
+	
+	return new Response(JSON.stringify(list), { status: 200, headers: { 'Content-Type': 'application/json' } });
+});
+
 export default {
 	fetch: async (request, env, ctx) => {
 		let userEmail = request.headers.get('CF-Access-Authenticated-User-Email');
