@@ -6,6 +6,8 @@ interface Env {
 	ENVIRONMENT: string;
 	repo: KVNamespace;
 	COUNTERS: DurableObjectNamespace<Counter>;
+	DB: D1Database;
+	userId: string;
 }
 
 const router = Router();
@@ -39,6 +41,13 @@ router.post('/api/create', async (request: Request, env: Env) => {
 	}
 
 	await env.repo.put(data.alias, data.fullUrl);
+
+	const session = env.DB.withSession() // synchronous
+	// query executes on either primary database or a read replica
+	const result = await session
+		.prepare(`INSERT INTO "user-url-mapping" (userId, originalUrl, shortenedUrl)
+VALUES ('${env.userId}', '${data.fullUrl}', '${data.alias}');`)
+		.run()
 
 	return new Response(data.alias, { status: 201 });
 });
@@ -77,6 +86,7 @@ export default {
 		}
 
 		console.log(`Successfull authentication from user: ${userEmail}`);
+		env.userId = userEmail;
 		return router.fetch(request, env, ctx)
 	}
 
